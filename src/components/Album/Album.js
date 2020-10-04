@@ -1,7 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './Album.css';
-import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -10,7 +8,6 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -31,7 +28,7 @@ const styles = theme => ({
     flexDirection: 'column',
   },
   cardMedia: {
-    paddingTop: '56.25%', // 16:9
+    paddingTop: '56.25%',
   },
   cardContent: {
     flexGrow: 1,
@@ -41,12 +38,12 @@ const styles = theme => ({
   },
   media: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: '56.25%',
   },
   avatar: {
     backgroundColor: grey[400],
   },
-  descripton: {
+  description: {
     display: 'block',
     display: '-webkit-box',
     maxWidth: 300,
@@ -59,29 +56,23 @@ const styles = theme => ({
 });
 
 class Album extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      date: []
-    }
+    
+  constructor(props) {
+    super(props)
+  }
+
+  sendData = (id) =>{
+    this.props.handleChange(data[id]);
   }
 
   render() {
-    let time;
     return (
       <React.Fragment>
         <CssBaseline />
-        <AppBar position="relative">
-          <Toolbar>
-            <Typography variant="h6" color="inherit" noWrap>
-              Learning React
-          </Typography>
-          </Toolbar>
-        </AppBar>
         <main>
           <Container className={this.props.classes.cardGrid} maxWidth="md">
             <Grid container spacing={4}>
-              {data.map((card) => (
+              {data.map((card , i) => (
                 <Grid item key={card.id} xs={12} sm={6} md={4}>
                   <Card className={this.props.classes.root}>
                     <CardHeader
@@ -102,12 +93,12 @@ class Album extends React.Component {
                       title={card.category}
                     />
                     <CardContent>
-                      <Typography variant="body2" color="textSecondary" component="p" className={this.props.classes.descripton}>
+                      <Typography variant="body2" color="textSecondary" component="p" className={this.props.classes.description}>
                         {card.description}
                       </Typography>
                     </CardContent>
                     <CardActions disableSpacing>
-                      <Button size="small" color="primary">
+                      <Button size="small" color="primary" onClick={() => this.sendData(i)}>
                         Read More
                       </Button>
                     </CardActions>
