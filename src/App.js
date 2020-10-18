@@ -1,44 +1,19 @@
 import React from 'react';
 import './App.css';
-import './components/Album/Album'
-import Album from './components/Album/Album';
-import Post from './components/Post/Post';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Grid from '@material-ui/core/Grid';
+import Form from './components/Form/Form'
+import ShowInfo from './components/ShowInfo/ShowInfo'
 
 class App extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      currentPage: "Album",
-      postData: {
-        title: "",
-        author: "",
-        created: "",
-        description: "",
-        body: "",
-        cover: ""
-      }
+
     }
-  }
-
-  goToAlbum = () => {
-    this.setState({ currentPage: "Album" });
-  }
-
-  goToPost = (recieved) => {
-    this.setState({
-      currentPage: "Post",
-      postData: {
-        title: recieved.title,
-        author: recieved.author,
-        created: recieved.created,
-        description: recieved.description,
-        body: recieved.body,
-        cover: recieved.cover
-      }
-    });
   }
 
   render() {
@@ -51,20 +26,19 @@ class App extends React.Component {
           </Typography>
           </Toolbar>
         </AppBar>
-        {this.state.currentPage === "Album" ?
-          <Album handleChange={this.goToPost} /> :
-          <Post
-            action={this.goToAlbum}
-            title={this.state.postData.title}
-            author={this.state.postData.author}
-            created={this.state.postData.created}
-            description={this.state.postData.description}
-            body={this.state.postData.body}
-            cover={this.state.postData.cover}
-          />}
+        <Grid container component="main">
+          <CssBaseline />
+          <Grid item xs={12} sm={3} md={4}>
+            <ShowInfo />
+          </Grid>
+          <Grid item xs={12} sm={9} md={8} elevation={6}>
+            <Form />
+          </Grid>
+        </Grid>
       </React.Fragment>
     )
   }
 }
 
-export default App;
+export default App
+
