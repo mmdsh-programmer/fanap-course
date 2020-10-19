@@ -5,14 +5,24 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import Form from './components/Form/Form'
-import ShowInfo from './components/ShowInfo/ShowInfo'
+import Form from './components/Form/Form';
+import ShowInfo from './components/ShowInfo/ShowInfo';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      avatar: undefined,
+      firstName: "",
+      lastName: "",
+      phone: "",
+      email: "",
+      birthDate: "",
+      title: "",
+      isEmailVisible: true,
+      gender: "",
+      address: "",
+      imageAddress : ""
     }
   }
 
@@ -28,10 +38,10 @@ class App extends React.Component {
         </AppBar>
         <Grid container component="main">
           <CssBaseline />
-          <Grid item xs={12} sm={3} md={4}>
+          <Grid item xs={12} sm={4} md={3}>
             <ShowInfo />
           </Grid>
-          <Grid item xs={12} sm={9} md={8} elevation={6}>
+          <Grid item xs={12} sm={8} md={9}>
             <Form />
           </Grid>
         </Grid>
