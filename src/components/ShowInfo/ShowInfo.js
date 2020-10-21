@@ -6,8 +6,6 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
-
-
 const styles = theme => ({
   paper: {
     display: 'flex',
@@ -34,25 +32,26 @@ class ShowInfo extends React.Component {
   }
 
   render() {
+    const { recievedData , classes } = this.props;
     return (
-      <div className={this.props.classes.paper}>
-        <Paper className={this.props.classes.paperPadding}>
+      <div className={classes.paper}>
+        <Paper className={classes.paperPadding}>
           <Grid container direction="column" alignItems="center">
-            <Avatar className={this.props.classes.large} src="">M</Avatar>
+            <Avatar className={classes.large} src={recievedData.avatar}>M</Avatar>
             <Typography variant="subtitle1" component="p" gutterBottom align="center">
-              Mohammad Shakeri
+              {`${recievedData.firstName} ${recievedData.lastName}`}
             </Typography>
             <Typography variant="body1" component="p" gutterBottom align="center">
-              example@gmail.com
+              {recievedData.isEmailVisible ? (recievedData.email) : ""}
             </Typography>
             <Typography variant="body1" component="p" gutterBottom align="center">
-              09906855658
+              {recievedData.phone}
             </Typography>
             <Typography variant="body1" component="p" gutterBottom align="center">
-              2000/12/14
+              {recievedData.birthDate}
             </Typography>
             <Typography variant="body1" component="p" gutterBottom align="center">
-              Writer
+              {recievedData.title}
             </Typography>
           </Grid>
         </Paper>

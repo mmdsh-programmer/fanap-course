@@ -54,7 +54,13 @@ class Form extends React.Component {
   }
 
   render() {
-    const { handleChange , handleFile , data , handleSubmit } = this.props;
+    const { 
+      handleChange , 
+      handleFile , 
+      data , 
+      handleSubmit , 
+      classes 
+    } = this.props;
     const phoneValidation = new RegExp('09(1[0-9]|3[1-9]|2[1-9])-?[0-9]{3}-?[0-9]{4}');
     const emailValidation = new RegExp('[^@]+@[^.]+..+');
     const birthDayValidation = new RegExp('^[0-9]{4}([- /.])(((0[13578]|(10|12))\\1(0[1-9]|[1-2][0-9]|3[0-1]))|(02\\1(0[1-9]|[1-2][0-9]))|((0[469]|11)\\1(0[1-9]|[1-2][0-9]|30)))$');
@@ -73,22 +79,23 @@ class Form extends React.Component {
       },
     ]
     return (
-      <div className={this.props.classes.paper}>
-        <Paper className={this.props.classes.paperPadding}>
-          <Grid className={this.props.classes.buttonRow}>
+      <div className={classes.paper}>
+        <Paper className={classes.paperPadding}>
+          <Grid className={classes.buttonRow}>
             <label htmlFor="file-button">
               <Button variant="contained" color="secondary" component="span">
                 change picture
               </Button>
             </label>
-            <input accept="image/*" className={this.props.classes.input} id="file-button" type="file" onChange={handleFile} />
+            <input accept="image/*" className={classes.input} id="file-button" type="file" onChange={handleFile} />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
+              disabled={!data.submitActivation}
               onClick={handleSubmit}
-              className={this.props.classes.buttons}
+              className={classes.buttons}
             >
               Submit
             </Button>
@@ -194,10 +201,10 @@ class Form extends React.Component {
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6} className={this.props.classes.radioRow}>
+            <Grid item xs={12} sm={6} className={classes.radioRow}>
               <FormControl component="fieldset">
                 <FormLabel component="legend">Gender</FormLabel>
-                <RadioGroup aria-label="gender" name="gender" className={this.props.classes.radioHolder} onChange={handleChange}>
+                <RadioGroup aria-label="gender" name="gender" className={classes.radioHolder} onChange={handleChange}>
                   <FormControlLabel value="female" control={<Radio style={{display:'inline'}} />} label="Female" />
                   <FormControlLabel value="male" control={<Radio style={{display:'inline'}} />} label="Male" />
                   <FormControlLabel value="other" control={<Radio style={{display:'inline'}} />} label="Other" />

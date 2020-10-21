@@ -22,8 +22,23 @@ class App extends React.Component {
       isEmailVisible: true,
       gender: "",
       address: "",
-      imageAddress : ""
     }
+  }
+
+  updateAppState = (data) => {
+    this.setState({
+      avatar: data.avatar,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phone,
+      email: data.email,
+      birthDate: data.birthDate,
+      title: data.title,
+      isEmailVisible: data.isEmailVisible,
+      gender: data.gender,
+      address: data.address,
+    } , 
+    () => console.log('app state' , this.state))
   }
 
   render() {
@@ -39,10 +54,10 @@ class App extends React.Component {
         <Grid container component="main">
           <CssBaseline />
           <Grid item xs={12} sm={4} md={3}>
-            <ShowInfo />
+            <ShowInfo recievedData={this.state} />
           </Grid>
           <Grid item xs={12} sm={8} md={9}>
-            <Form />
+            <Form updateAppState={this.updateAppState} />
           </Grid>
         </Grid>
       </React.Fragment>

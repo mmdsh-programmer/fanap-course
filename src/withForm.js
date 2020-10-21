@@ -15,7 +15,7 @@ const withForm = WrappedComponent => {
                 isEmailVisible: true,
                 gender: "",
                 address: "",
-                imageAddress: ""
+                submitActivation: true,
             };
         }
 
@@ -24,21 +24,26 @@ const withForm = WrappedComponent => {
             const name = target.name;
             const type = target.type;
             const value = type === 'checkbox' ? target.checked : (target.value.length !== 0 ? target.value : undefined);
-            this.setState({ [name]: value })
+            this.setState({
+                [name]: value,              
+            } ,
+            () => console.log(this.state))
         }
 
         handleFile = (event) => {
             if (event.target.files && event.target.files[0]) {
                 let reader = new FileReader();
                 reader.onload = (e) => {
-                    this.setState({ imageAddress: e.target.result });
+                    this.setState({ avatar: e.target.result });
                 };
                 reader.readAsDataURL(event.target.files[0]);
             }
         }
 
         handleSubmit = (event) => {
-
+            event.preventDefault();
+            const { updateAppState } = this.props;
+            updateAppState(this.state);
         }
 
         render() {
