@@ -1,5 +1,4 @@
 import React from 'react';
-import './ShowInfo.css';
 import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
