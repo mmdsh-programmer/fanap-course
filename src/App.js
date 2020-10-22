@@ -6,6 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Form from './components/Form/Form';
 import ShowInfo from './components/ShowInfo/ShowInfo';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 
 class App extends React.Component {
   constructor(props) {
@@ -42,22 +43,27 @@ class App extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <AppBar position="relative">
-          <Toolbar>
-            <Typography variant="h6" color="inherit" noWrap>
-              Learning React
-          </Typography>
-          </Toolbar>
-        </AppBar>
-        <Grid container component="main">
-          <CssBaseline />
-          <Grid item xs={12} sm={4} md={3}>
-            <ShowInfo recievedData={this.state} />
+        
+          <AppBar position="relative">
+            <Toolbar>
+              <Typography variant="h6" color="inherit" noWrap>
+                Learning React
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Grid container component="main">
+            <CssBaseline />
+            <Grid item xs={12} sm={4} md={3}>
+              <ErrorBoundary>
+                <ShowInfo recievedData={this.state} />
+              </ErrorBoundary>
+            </Grid>
+            <Grid item xs={12} sm={8} md={9}>
+              <ErrorBoundary>
+                <Form updateAppState={this.updateAppState} />
+              </ErrorBoundary>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={8} md={9}>
-            <Form updateAppState={this.updateAppState} />
-          </Grid>
-        </Grid>
       </React.Fragment>
     )
   }
