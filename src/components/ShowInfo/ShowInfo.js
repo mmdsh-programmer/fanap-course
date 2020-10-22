@@ -38,7 +38,7 @@ class ShowInfo extends React.Component {
             <Avatar className={classes.large} src={recievedData.avatar}>M</Avatar>
             <Typography
               variant="subtitle1"
-              component="p"
+              component="span"
               gutterBottom
               align="center"
               className={classes.wrapText}
@@ -47,7 +47,7 @@ class ShowInfo extends React.Component {
             </Typography>
             <Typography
               variant="body1"
-              component="p"
+              component="span"
               gutterBottom
               align="center"
               className={classes.wrapText}
@@ -56,7 +56,7 @@ class ShowInfo extends React.Component {
             </Typography>
             <Typography
               variant="body1"
-              component="p"
+              component="span"
               gutterBottom
               align="center"
               className={classes.wrapText}
@@ -65,7 +65,7 @@ class ShowInfo extends React.Component {
             </Typography>
             <Typography
               variant="body1"
-              component="p"
+              component="span"
               gutterBottom
               align="center"
             >
@@ -73,11 +73,27 @@ class ShowInfo extends React.Component {
             </Typography>
             <Typography
               variant="body1"
-              component="p"
+              component="span"
               gutterBottom
               align="center"
             >
               {recievedData.title}
+            </Typography>
+            <Typography
+              variant="body1"
+              component="span"
+              gutterBottom
+              align="center"
+            >
+              {recievedData.gender}
+            </Typography>
+            <Typography
+              variant="body1"
+              component="span"
+              gutterBottom
+              align="center"
+            >
+              {recievedData.address}
             </Typography>
           </Grid>
         </Paper>
