@@ -12,7 +12,6 @@ import Switch from '@material-ui/core/Switch';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Paper from '@material-ui/core/Paper';
-import Avatar from '@material-ui/core/Avatar';
 import withForm from '../../withForm'
 
 
@@ -49,10 +48,6 @@ const styles = theme => ({
 })
 
 class Form extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { 
       handleChange , 
@@ -61,9 +56,6 @@ class Form extends React.Component {
       handleSubmit , 
       classes 
     } = this.props;
-    const phoneValidation = new RegExp('09(1[0-9]|3[1-9]|2[1-9])-?[0-9]{3}-?[0-9]{4}');
-    const emailValidation = new RegExp('[^@]+@[^.]+..+');
-    const birthDayValidation = new RegExp('^[0-9]{4}([- /.])(((0[13578]|(10|12))\\1(0[1-9]|[1-2][0-9]|3[0-1]))|(02\\1(0[1-9]|[1-2][0-9]))|((0[469]|11)\\1(0[1-9]|[1-2][0-9]|30)))$');
     const titles = [
       {
         value: 'Writer',
@@ -107,10 +99,10 @@ class Form extends React.Component {
                 label="First Name"
                 name="firstName"
                 type="text"
-                error = {data.firstName === undefined}
+                error = {data.errors.firstName}
                 onChange={handleChange}
                 value={data.firstName}
-                helperText={data.firstName === undefined ? "required" : ""}
+                helperText={data.errors.firstName ? "required" : ""}
                 fullWidth
                 autoFocus
                 size="small"
@@ -122,10 +114,10 @@ class Form extends React.Component {
                 name="lastName"
                 label="Last Name"
                 type="text"
-                error = {data.lastName === undefined}
+                error = {data.errors.lastName}
                 onChange={handleChange}
                 value={data.lastName}
-                helperText={data.lastName === undefined ? "required" : ""}
+                helperText={data.errors.lastName ? "required" : ""}
                 fullWidth
                 size="small"
               />
@@ -137,10 +129,10 @@ class Form extends React.Component {
                 label="Phone"
                 type="tel"
                 id="phone"
-                error = {(!phoneValidation.test(data.phone) && data.phone) || data.phone === undefined}
+                error = {data.errors.phone}
                 onChange={handleChange}
                 value={data.phone}
-                helperText={!phoneValidation.test(data.phone) && data.phone ? "not valid" : ""}
+                helperText={data.errors.phone ? "invalid" : ""}
                 
                 fullWidth
                 size="small"
@@ -152,10 +144,10 @@ class Form extends React.Component {
                 name="email"
                 label="Email"
                 type="email"
-                error = {(!emailValidation.test(data.email) && data.email) || data.email === undefined}
+                error = {data.errors.email}
                 onChange={handleChange}
                 value={data.email}
-                helperText={!emailValidation.test(data.email) && data.email ? "not valid" : ""}
+                helperText={data.errors.email ? "invalid" : ""}
                 id="email"
                 fullWidth
                 size="small"
@@ -167,10 +159,10 @@ class Form extends React.Component {
                 name="birthDate"
                 label="Birth Date"
                 type="text"
-                error = {(!birthDayValidation.test(data.birthDate) && data.birthDate) || data.birthDate === undefined}
+                error = {data.errors.birthDate}
                 onChange={handleChange}
                 value={data.birthDate}
-                helperText={!birthDayValidation.test(data.birthDate) && data.birthDate ? "not valid" : ""}
+                helperText={data.errors.birthDate ? "invalid" : ""}
                 fullWidth
                 size="small"
               />

@@ -15,19 +15,59 @@ const withForm = WrappedComponent => {
                 isEmailVisible: true,
                 gender: "",
                 address: "",
-                submitActivation: true,
+                submitActivation: false,
+                errors: {
+                    email: false,
+                    phone: false,
+                    birthDate: false,
+                    firstName: false,
+                    lastName: false
+                }
             };
+        }
+
+        handleValidation = (name, value) => {
+            const { errors, firstName, lastName, phone, email, birthDate } = this.state;
+
+            if (name === 'firstName') {
+                value === "" ? errors["firstName"] = true : errors["firstName"] = false;
+            }
+
+            if (name === 'lastName') {
+                value === "" ? errors["lastName"] = true : errors["lastName"] = false;
+            }
+
+            if (name === 'email') {
+                const emailValidation = new RegExp('[^@]+@[^.]+..+');
+                !emailValidation.test(value) ? errors["email"] = true : errors["email"] = false;
+            }
+
+            if (name === 'phone') {
+                const phoneValidation = new RegExp('09(1[0-9]|3[1-9]|2[1-9])-?[0-9]{3}-?[0-9]{4}');
+                !phoneValidation.test(value) ? errors["phone"] = true : errors["phone"] = false;
+            }
+
+            if (name === 'birthDate') {
+                const birthDateValidation = new RegExp('^[0-9]{4}([- /.])(((0[13578]|(10|12))\\1(0[1-9]|[1-2][0-9]|3[0-1]))|(02\\1(0[1-9]|[1-2][0-9]))|((0[469]|11)\\1(0[1-9]|[1-2][0-9]|30)))$');
+                !birthDateValidation.test(value) ? errors["birthDate"] = true : errors["birthDate"] = false;
+            }
+
+            this.setState({
+                errors: errors,
+                submitActivation: errors["email"] === false && errors["phone"] === false
+                    && errors["birthDate"] === false && errors["firstName"] === false
+                    && errors["lastName"] === false && firstName !== "" && lastName !== ""
+                    && phone !== "" && email !== "" && birthDate !== "" ? true : false
+            });
         }
 
         handleChange = (event) => {
             const target = event.target;
             const name = target.name;
             const type = target.type;
-            const value = type === 'checkbox' ? target.checked : (target.value.length !== 0 ? target.value : undefined);
-            this.setState({
-                [name]: value,              
-            } ,
-            () => console.log(this.state))
+            const value = type === 'checkbox' ? target.checked : target.value;
+            this.handleValidation(name, value);
+            this.setState({ [name]: value })
         }
 
         handleFile = (event) => {

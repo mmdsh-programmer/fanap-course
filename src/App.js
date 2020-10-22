@@ -37,8 +37,7 @@ class App extends React.Component {
       isEmailVisible: data.isEmailVisible,
       gender: data.gender,
       address: data.address,
-    } , 
-    () => console.log('app state' , this.state))
+    })
   }
 
   render() {
