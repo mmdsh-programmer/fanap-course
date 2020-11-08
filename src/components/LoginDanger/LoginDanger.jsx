@@ -22,7 +22,7 @@ export class LoginDanger extends React.Component {
                     <Grid container>
                         <Grid item>
                             <Link to="/signup" variant="body2">
-                                You are not signed in! please sign in first
+                                You are not signed in! please sign in first!
                     </Link>
                         </Grid>
                     </Grid>
