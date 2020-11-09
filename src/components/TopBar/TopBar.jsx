@@ -7,10 +7,9 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
 import { auth, signout } from "services";
-import { withStyles } from '@material-ui/core';
 import { AuthContext } from "helpers/AuthProvider"
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   toolbar: {
     flexWrap: "wrap"
   },
@@ -18,79 +17,61 @@ const styles = theme => ({
   link: {
     margin: theme.spacing(1, 1.5)
   }
-});
+}));
 
-export class TopBar extends React.Component {
+export default function TopBar() {
+  const classes = useStyles();
+  const { user } = React.useContext(AuthContext);
 
-  static contextType = AuthContext
-
-  componentDidMount = () => {
-    const { changeStatus } = this.context;
-    auth.onAuthStateChanged(u => {
-      if (!!u) {
-        changeStatus(true , u);
-      } else {
-       changeStatus(false);
-      }
-      
-    });
-  }
-
-  render() {
-    const { classes } = this.props;
-    const { isSignedIn } = this.context;
-    return (
-      <AppBar position="relative" color="default">
-        <Toolbar className={classes.toolbar}>
-          <Typography
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-          >
-            Learning React
+  return (
+    <AppBar position="relative" color="default">
+      <Toolbar className={classes.toolbar}>
+        <Typography
+          variant="h6"
+          color="inherit"
+          noWrap
+          className={classes.title}
+        >
+          Learning React
         </Typography>
-          <nav>
+        <nav>
+          <Link
+            component={RouterLink}
+            to="/"
+            className={classes.link}
+            variant="button"
+          >
+            Home
+          </Link>
+          <Link
+            component={RouterLink}
+            to="/new"
+            className={classes.link}
+            variant="button"
+          >
+            New
+          </Link>
+          {!!user && (
             <Link
               component={RouterLink}
-              to="/"
+              to="/profile"
               className={classes.link}
               variant="button"
             >
-              Home
-          </Link>
-            <Link
-              component={RouterLink}
-              to="/new"
-              className={classes.link}
-              variant="button"
-            >
-              New
-          </Link>
-            {!!isSignedIn && (
-              <Link
-                component={RouterLink}
-                to="/profile"
-                className={classes.link}
-                variant="button"
-              >
-                Profile
-              </Link>
-            )}
-          </nav>
-          {!!isSignedIn ? (
-            <Button variant="outlined" onClick={signout}>
-              Sign Out
+              {user ? user.displayName : "Profile"}
+            </Link>
+          )}
+        </nav>
+        {!!user ? (
+          <Button variant="outlined" onClick={signout}>
+            Sign Out
+          </Button>
+        ) : (
+            <Button variant="outlined" component={RouterLink} to="/signin">
+              Sign In
             </Button>
-          ) : (
-              <Button variant="outlined" component={RouterLink} to="/signin">
-                Sign In
-              </Button>
-            )}
-        </Toolbar>
-      </AppBar>
-    )
-  }
+          )}
+      </Toolbar>
+    </AppBar>
+  );
 }
-
-export default withStyles(styles)(TopBar)

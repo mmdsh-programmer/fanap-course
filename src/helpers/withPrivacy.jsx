@@ -1,16 +1,15 @@
 import React from 'react'
 import { AuthContext } from "helpers/AuthProvider"
-import LoginDanger from "../components/LoginDanger/LoginDanger"
+import { Redirect } from "react-router-dom";
 
 const withPrivacy = WrappedComponent => {
-    class WithPrivacy extends React.Component {
-        static contextType = AuthContext;
-        render() {
-            const { isSignedIn } = this.context;
-            return (
-                isSignedIn ? <WrappedComponent {...this.props} /> : <LoginDanger />
-            )
-        }
+    function WithPrivacy(props) {
+
+        const { user } = React.useContext(AuthContext);
+
+        return (
+            user ? <WrappedComponent {...props} /> : <Redirect to={"/signin"} />
+        )
     }
     return WithPrivacy
 }

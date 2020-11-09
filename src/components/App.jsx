@@ -23,5 +23,5 @@ export default function App() {
       </AuthContextProvider>
       <ToastContainer />
     </React.Fragment>
-  );
+  )
 }

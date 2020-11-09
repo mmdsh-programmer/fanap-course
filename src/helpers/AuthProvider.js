@@ -1,23 +1,26 @@
-import React, { createContext } from 'react'
+import React from 'react'
+import { auth } from "services";
 
 export const AuthContext = React.createContext();
 
-class AuthContextProvider extends React.Component {
-    state = {
-        user: undefined,
-        isSignedIn: false
-    }
-    changeStatus = (boolean , userData) => {
-        this.setState({isSignedIn : boolean , user : userData})
-    }
-    render() {
-        return (
-            <AuthContext.Provider value={{ ...this.state , changeStatus:this.changeStatus }}>
-                {this.props.children}
-            </AuthContext.Provider>
-        )
-    }
-}
+export default function AuthContextProvider(props) {
 
-export default AuthContextProvider
+    const [user, setUser] = React.useState();
+
+    React.useEffect(() => {
+        auth.onAuthStateChanged(u => {
+            if (!!u) {
+                setUser(u);
+            } else {
+                setUser();
+            }
+        });
+    }, []);
+
+    return (
+        <AuthContext.Provider value={{ user: user, setUser: setUser }}>
+            {props.children}
+        </AuthContext.Provider>
+    )
+}
 
