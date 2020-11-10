@@ -10,6 +10,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Button from "components/Button";
 import { signin } from "services";
+import { useForm, Controller } from "react-hook-form"
+
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -33,18 +35,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignIn(props) {
   const classes = useStyles();
-  const [state, setState] = React.useState({ email: "", password: "" });
   const [loading, setLoading] = React.useState(false);
+  const { register, handleSubmit, errors: fieldsErrors, control } = useForm();
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setState(s => ({ ...s, [name]: value }));
-  };
-
-  const handleSubmit = e => {
+  const onSubmit = (data, e) => {
     e.preventDefault();
     setLoading(true);
-    const { email, password } = state;
+    const { email, password } = data;
     signin(email, password)
       .catch(error => toast.error(error.message))
       .then(props.history.replace("/"))
@@ -60,40 +57,56 @@ export default function SignIn(props) {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
+        <form className={classes.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+          <Controller
             name="email"
-            autoComplete="email"
-            autoFocus
-            value={state.email}
-            onChange={handleChange}
+            as={
+              <TextField
+                inputRef={register}
+                error={fieldsErrors.email}
+                helperText={fieldsErrors.email ? "Email is not valid" : null}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+            }
+            control={control}
+            defaultValue=""
+            rules={{
+              required: true,
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                message: 'invalid email address'
+              }
+            }}
           />
           <TextField
+            inputRef={register({required : true})}
+            error={fieldsErrors.password}
+            helperText={fieldsErrors.password ? "Password is not valid" : null}
             variant="outlined"
             margin="normal"
+            name="password"
             required
             fullWidth
-            name="password"
             label="Password"
             type="password"
             id="password"
             autoComplete="current-password"
-            value={state.password}
-            onChange={handleChange}
           />
+
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={handleSubmit}
             loading={loading}
           >
             Sign In

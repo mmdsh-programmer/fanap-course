@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Button from "components/Button";
 import { signup } from "services";
+import { useForm, Controller } from "react-hook-form"
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -33,22 +34,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function Signup(props) {
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    name: "",
-    email: "",
-    password: ""
-  });
   const [loading, setLoading] = React.useState(false);
+  const { register, handleSubmit, errors: fieldsErrors, control } = useForm();
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setState(s => ({ ...s, [name]: value }));
-  };
-
-  const handleSubmit = e => {
+  const onSubmit = (data, e) => {
     e.preventDefault();
     setLoading(true);
-    const { name, email, password } = state;
+    const { name, email, password } = data;
     signup(email, password, name)
       .catch(error => toast.error(error.message))
       .then(() => props.history.replace("/"))
@@ -64,8 +56,11 @@ export default function Signup(props) {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit(onSubmit)}>
           <TextField
+            inputRef={register({ required: true })}
+            error={fieldsErrors.name}
+            helperText={fieldsErrors.name ? "Name is required" : null}
             variant="outlined"
             margin="normal"
             required
@@ -75,33 +70,55 @@ export default function Signup(props) {
             name="name"
             autoComplete="name"
             autoFocus
-            value={state.name}
-            onChange={handleChange}
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
+          <Controller
             name="email"
-            autoComplete="email"
-            value={state.email}
-            onChange={handleChange}
+            as={
+              <TextField
+                inputRef={register}
+                error={fieldsErrors.email}
+                helperText={fieldsErrors.email ? "Email is not valid" : null}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+            }
+            control={control}
+            defaultValue=""
+            rules={{
+              required: true,
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                message: 'invalid email address'
+              }
+            }}
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
+          <Controller
             name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={state.password}
-            onChange={handleChange}
+            as={
+              <TextField
+                inputRef={register}
+                error={fieldsErrors.password}
+                helperText={fieldsErrors.password ? "Password is not valid" : null}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+            }
+            defaultValue=""
+            control={control}
+            rules={{ required: true }}
           />
           <Button
             type="submit"
@@ -109,7 +126,6 @@ export default function Signup(props) {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={handleSubmit}
             loading={loading}
           >
             Sign Up
