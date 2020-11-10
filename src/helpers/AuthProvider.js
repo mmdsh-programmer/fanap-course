@@ -5,7 +5,7 @@ export const AuthContext = React.createContext();
 
 export default function AuthContextProvider(props) {
 
-    const [user, setUser] = React.useState();
+    const [user, setUser] = React.useState(auth.currentUser);
 
     React.useEffect(() => {
         auth.onAuthStateChanged(u => {

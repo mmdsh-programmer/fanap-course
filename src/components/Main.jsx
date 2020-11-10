@@ -5,6 +5,7 @@ import TopBar from "components/TopBar";
 import AddArticle from "pages/AddArticle";
 import Articles from "pages/Articles";
 import withPrivacy from "helpers/withPrivacy"
+import NotFound from "components/NotFound/NotFound"
 
 export default function Main() {
   return (
@@ -12,8 +13,9 @@ export default function Main() {
       <TopBar />
       <Container maxWidth="md">
         <Switch>
-          <Route exact path={["/", "/articles"]} component={withPrivacy(Articles)} />
+          <Route exact path={["/", "/articles"]} component={Articles} />
           <Route exact path="/new" component={withPrivacy(AddArticle)} />
+          <Route component={() => <NotFound />} />
         </Switch>
       </Container>
     </>

@@ -43,7 +43,10 @@ export default function SignIn(props) {
     setLoading(true);
     const { email, password } = data;
     signin(email, password)
-      .catch(error => toast.error(error.message))
+      .catch(error => {
+        toast.error(error.message) ; 
+        props.history.push("/signin");
+      })
       .then(props.history.replace("/"))
       .finally(() => setLoading(false));
   };
