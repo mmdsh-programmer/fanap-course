@@ -6,7 +6,9 @@ import Button from "@material-ui/core/Button";
 import { ArticleService } from "components/Article";
 import { useForm, Controller } from "react-hook-form"
 import JoditEditor from "jodit-react";
-import { storage } from "services/firebase"
+import { storage, db } from "services/firebase"
+import { toast } from "react-toastify";
+import { AuthContext } from "helpers/AuthProvider"
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -21,7 +23,9 @@ const useStyles = makeStyles((theme) => ({
 export default function AddArticle() {
   const classes = useStyles();
   const { register, handleSubmit, errors: fieldsErrors, control } = useForm();
+  const { user } = React.useContext(AuthContext);
   const [rte, setRte] = React.useState()
+
   const onEditorChange = (data) => {
     setRte(data)
   }
@@ -29,18 +33,24 @@ export default function AddArticle() {
   const onSubmit = (data, e) => {
     e.preventDefault();
     const { title, picture } = data;
-    const storageRef = storage().ref();
-    const fileRef = storageRef.child(picture.image[0].name);
-    fileRef.put(picture.image[0]).then(() => {
-      console.log("picture uploaded successfully");
-    })
+    const key = db.ref().child(user.uid).push().key
+    const img = storage.ref("/images").child(key);
     const finalData = {
       title: title,
       body: rte,
+      uid: user.uid,
+      datePublished: Date.now(),
+      dateEdited: Date.now(),
+      key: key,
+      image: picture[0].name,
+      name: user.displayName
     }
+    img.put(picture[0]).then((snap) => {
+      console.log("file uploaded")
+    }).catch(error => toast.error(error.message))
     ArticleService.create(finalData)
-      .then(() => alert("Your article successfully added"))
-      .catch(error => console.log(error));
+      .then(() => toast.success("Article was successfully added"))
+      .catch(error => toast.error(error.message));
   };
 
   return (
@@ -52,7 +62,7 @@ export default function AddArticle() {
           id="contained-button-file"
           type="file"
           name="picture"
-          ref={register}
+          ref={register({ required: true })}
         />
         <label htmlFor="contained-button-file">
           <Button variant="contained" color="primary" component="span">

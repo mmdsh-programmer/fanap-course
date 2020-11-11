@@ -1,11 +1,9 @@
 import * as firebase from "services";
 
-const db = firebase.db.ref("/articles");
+export const db = firebase.db.ref("/articles");
+export const dbImage = firebase.db.ref("/images")
 
 class ArticleService {
-  getAll() {
-    return db;
-  }
 
   create(article) {
     return db.push(article);
