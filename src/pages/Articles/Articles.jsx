@@ -68,7 +68,6 @@ export default function Articles(props) {
   const { user } = React.useContext(AuthContext);
   const { setPost } = React.useContext(PostContext);
   const [articles, setArticles] = React.useState([]);
-  const [serverData, setServerData] = React.useState([])
   const [loading, setLoading] = React.useState(false)
   const storageRef = storage.ref();
 
@@ -91,7 +90,6 @@ export default function Articles(props) {
     db.once("value", function (snapshot) {
       let dataArray = [];
       let imageUrl = "";
-      setServerData(snapshot.val())
       snapshot.forEach(userSnapshot => {
         let data = userSnapshot.val();
         let imageRef = storageRef.child(`images/${data.key}`)
