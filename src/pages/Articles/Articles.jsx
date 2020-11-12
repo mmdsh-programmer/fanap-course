@@ -17,11 +17,13 @@ import { grey } from '@material-ui/core/colors';
 import { db } from "components/Article/article.service"
 import { storage } from "services/firebase"
 import { CircularProgress } from "@material-ui/core";
+import { PostContext } from "helpers/PostProvider"
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
+    textAlign: "center"
   },
   card: {
     height: '100%',
@@ -30,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
   },
   cardMedia: {
     paddingTop: '56.25%',
+  },
+  cardHeader: {
+    textAlign: "left"
   },
   cardContent: {
     flexGrow: 1,
@@ -48,24 +53,45 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     display: '-webkit-box',
     maxWidth: 300,
-    height: 160,
     webkitLineClamp: 3,
     webkitBoxOrient: 'vertical',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+  },
+  editPost: {
+    marginLeft: "auto"
   }
 }));
 
-export default function Articles() {
+export default function Articles(props) {
   const classes = useStyles();
+  const { user } = React.useContext(AuthContext);
+  const { setPost } = React.useContext(PostContext);
   const [articles, setArticles] = React.useState([]);
-  const [images, setImages] = React.useState([]);
-  const [loading, setLoading] = React.useState(true)
+  const [serverData, setServerData] = React.useState([])
+  const [loading, setLoading] = React.useState(false)
   const storageRef = storage.ref();
+
+  const showPost = (key, name, image, title, body, date, uid) => {
+    setPost({
+      key: key,
+      name: name,
+      image: image,
+      title: title,
+      body: body,
+      datePublished: date,
+      uid: uid
+    })
+    props.history.push("/post")
+  }
+
   React.useEffect(() => {
-    db.on("value", function (snapshot) {
+    console.log("user", user)
+    setLoading(true);
+    db.once("value", function (snapshot) {
       let dataArray = [];
       let imageUrl = "";
+      setServerData(snapshot.val())
       snapshot.forEach(userSnapshot => {
         let data = userSnapshot.val();
         let imageRef = storageRef.child(`images/${data.key}`)
@@ -85,32 +111,37 @@ export default function Articles() {
                 name: data.name
               }
             );
+            setArticles(dataArray);
             imageUrl = "";
-          })
+          });
       })
-      setArticles(dataArray)
       setLoading(false);
     }, function (errorObject) {
-      console.log("The read failed: " + errorObject.code);
+      toast.error("Could not read data!")
     });
-
   }, []);
+
+
+
+  const data = articles;
   return (
     <Container className={classes.cardGrid} maxWidth="md">
       {loading ? (
         <CircularProgress size={60} />
       ) : (
           <Grid container spacing={4}>
-            {articles.map((card, i) => (
-              <Grid item key={i} xs={12} sm={6} md={4}>
+            {data.map((card, i) => (
+              <Grid item key={card.key} xs={12} sm={6} md={4}>
                 <Card className={classes.root}>
                   <CardHeader
+                    className={classes.cardHeader}
                     avatar={
                       <Avatar aria-label="recipe" className={classes.avatar}>
                         {card.name.charAt(0)}
                       </Avatar>
                     }
-                    title={card.title.substr(0, 50) + "..."}
+                    nowrap={true}
+                    title={card.title}
                     subheader={
                       <Moment format="ddd [,] MMMM Do YYYY">
                         {card.datePublished}
@@ -128,13 +159,22 @@ export default function Articles() {
                       component="p"
                       className={classes.description}
                       dangerouslySetInnerHTML={{ __html: card.body }}
-                      nowrap>
+                      noWrap={true}>
                     </Typography>
                   </CardContent>
                   <CardActions disableSpacing>
-                    <Button size="small" color="primary">
+                    <Button size="small" color="primary" onClick={() => {
+                      showPost(card.key, card.name, card.image, card.title, card.body, card.datePublished, card.uid)
+                    }
+                    }>
                       Read More
-                </Button>
+                    </Button>
+                    {user && user.uid === card.uid && (
+                      <Button size="small" color="secondary" className={classes.editPost}>
+                        Edit Post
+                      </Button>
+                    )
+                    }
                   </CardActions>
                 </Card>
               </Grid>
