@@ -2,13 +2,13 @@ import React from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
 import { ArticleService } from "components/Article";
 import { useForm, Controller } from "react-hook-form"
 import JoditEditor from "jodit-react";
 import { storage, db } from "services/firebase"
 import { toast } from "react-toastify";
 import { AuthContext } from "helpers/AuthProvider"
+import Button from "components/Button/Button"
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -23,34 +23,35 @@ const useStyles = makeStyles((theme) => ({
 export default function AddArticle() {
   const classes = useStyles();
   const { register, handleSubmit, errors: fieldsErrors, control } = useForm();
+  const [rte, setRte] = React.useState();
   const { user } = React.useContext(AuthContext);
-  const [rte, setRte] = React.useState()
+  const [loading, setLoading] = React.useState(false);
 
   const onEditorChange = (data) => {
     setRte(data)
   }
 
-  const onSubmit = (data, e) => {
+  const onSubmit = async (data, e) => {
     e.preventDefault();
     const { title, picture } = data;
+    setLoading(true);
     const key = db.ref().child(user.uid).push().key
     const img = storage.ref("/images").child(key);
+    await img.put(picture[0]);
+    const url = await img.getDownloadURL();
     const finalData = {
       title: title,
       body: rte,
       uid: user.uid,
       datePublished: Date.now(),
-      dateEdited: Date.now(),
       key: key,
-      image: picture[0].name,
+      image: url,
       name: user.displayName
     }
-    img.put(picture[0]).then((snap) => {
-      console.log("file uploaded")
-    }).catch(error => toast.error(error.message))
     ArticleService.create(finalData)
       .then(() => toast.success("Article was successfully added"))
-      .catch(error => toast.error(error.message));
+      .catch(error => toast.error(error.message))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -86,12 +87,15 @@ export default function AddArticle() {
           name="body"
           onChange={onEditorChange}
           inputRef={register}
-          tabIndex={1} // tabIndex of textarea
+          tabIndex={1}
         />
-
       </Grid>
       <Grid item xs={12}>
-        <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
+        <Button
+          variant="contained"
+          color="primary"
+          loading={loading}
+          onClick={handleSubmit(onSubmit)}>
           Submit
         </Button>
       </Grid>

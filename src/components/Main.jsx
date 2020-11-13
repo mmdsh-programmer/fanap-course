@@ -7,6 +7,7 @@ import Articles from "pages/Articles";
 import withPrivacy from "helpers/withPrivacy"
 import NotFound from "components/NotFound/NotFound"
 import ShowPost from "pages/ShowPost/ShowPost"
+import EditPost from "pages/EditPost/EditPost"
 import PostContextProvider from "helpers/PostProvider"
 export default function Main() {
   return (
@@ -18,6 +19,7 @@ export default function Main() {
             <Route exact path={["/", "/articles"]} component={Articles} />
             <Route exact path="/new" component={withPrivacy(AddArticle)} />
             <Route exact path="/post" component={ShowPost} />
+            <Route exact path="/edit" component={EditPost} />
             <Route component={() => <NotFound />} />
           </Switch>
         </PostContextProvider>
