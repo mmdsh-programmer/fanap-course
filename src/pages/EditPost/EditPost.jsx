@@ -39,7 +39,7 @@ export default function ShowPost(props) {
     }
 
     React.useEffect(() => {
-        post.name == "" && props.history.push("/");
+        
     }, [])
 
     return (

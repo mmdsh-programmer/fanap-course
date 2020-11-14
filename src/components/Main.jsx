@@ -17,9 +17,8 @@ export default function Main() {
         <PostContextProvider>
           <Switch>
             <Route exact path={["/", "/articles"]} component={Articles} />
-            <Route exact path="/new" component={withPrivacy(AddArticle)} />
-            <Route exact path="/post" component={ShowPost} />
-            <Route exact path="/edit" component={EditPost} />
+            <Route exact path={["/new" , "/edit/:key"]} component={withPrivacy(AddArticle)} />
+            <Route path="/articles/:key" component={ShowPost} />
             <Route component={() => <NotFound />} />
           </Switch>
         </PostContextProvider>

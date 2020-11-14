@@ -63,7 +63,12 @@ const useStyles = makeStyles((theme) => ({
 export default function Articles(props) {
   const classes = useStyles();
   const { user } = React.useContext(AuthContext);
-  const { articles, loading } = useGetArticles();
+  const { values , loading } = useGetArticles();
+  const [articles, setArticles] = React.useState([]);
+
+  React.useEffect(() => {
+    setArticles(values ? Object.values(values) : []);
+  }, [values])
 
   return (
     <Container className={classes.cardGrid} maxWidth="md">
@@ -81,7 +86,6 @@ export default function Articles(props) {
                         {card.name.charAt(0)}
                       </Avatar>
                     }
-                    nowrap={true}
                     title={card.title}
                     subheader={
                       <Moment format="ddd [,] MMMM Do YYYY">
@@ -105,14 +109,14 @@ export default function Articles(props) {
                   </CardContent>
                   <CardActions disableSpacing>
                     <Button size="small" color="primary" onClick={() => {
-                      props.history.push(`/edit/${card.key}`)
+                      props.history.push(`/articles/${card.key}`)
                     }
                     }>
                       Read More
                     </Button>
                     {user && user.uid === card.uid && (
                       <Button size="small" color="secondary" className={classes.editPost} onClick={() => {
-                        props.history.push(`/post/${card.key}`)
+                        props.history.push(`/edit/${card.key}`)
                       }}>
                         Edit Post
                       </Button>

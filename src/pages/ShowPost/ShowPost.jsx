@@ -7,6 +7,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { PostContext } from "helpers/PostProvider"
 import { AuthContext } from "helpers/AuthProvider"
 import Grid from '@material-ui/core/Grid';
+import { useGetArticles } from "hook/GetArticles"
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
@@ -29,12 +31,18 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ShowPost(props) {
     const classes = useStyles();
-    const { post } = React.useContext(PostContext)
+    const { values, loading } = useGetArticles()
     const { user } = React.useContext(AuthContext);
-    React.useEffect(() => {
-        post.name == "" && props.history.push("/");
-    }, [])
+    const [selectedArticle, setSelectedArticle] = React.useState([]);
 
+    React.useEffect(() => {
+        if (props.match.params && props.match.params.key) {
+            const article = values ? Object.values(values) : [];
+            article.forEach((item) => {
+                item.key === props.match.params.key && setSelectedArticle(item)
+            })
+        }
+    }, [values])
     return (
         <Container className={classes.cardGrid} maxWidth="md">
             <Typography
@@ -42,14 +50,14 @@ export default function ShowPost(props) {
                 component="h2"
                 gutterBottom
             >
-                {post.title}
+                {selectedArticle.title}
             </Typography>
             <Typography
                 variant="caption"
                 color="textSecondary"
                 display="block"
             >
-                {`by :${post.name} `}
+                {`by :${selectedArticle.name} `}
             </Typography>
             <Typography
                 variant="caption"
@@ -57,16 +65,16 @@ export default function ShowPost(props) {
                 display="block"
                 gutterBottom
             >
-                date: <Moment format="ddd [,] MMMM Do YYYY">{post.datePublished}</Moment>
+                date: <Moment format="ddd [,] MMMM Do YYYY">{selectedArticle.datePublished}</Moment>
             </Typography>
             <div className={classes.imageHolder}>
-                <img src={post.image} className={classes.postImage} />
+                <img src={selectedArticle.image} className={classes.postImage} />
             </div>
             <Typography
                 variant="h6"
                 component="p"
                 gutterBottom
-                dangerouslySetInnerHTML={{ __html: post.body }}
+                dangerouslySetInnerHTML={{ __html: selectedArticle.body }}
             >
             </Typography>
             <Grid container>
@@ -77,12 +85,12 @@ export default function ShowPost(props) {
                 >
                     BACK TO LIST
                 </Button>
-                {user && post.uid && post.uid === user.uid &&  (
+                {user && selectedArticle.uid && selectedArticle.uid === user.uid && (
                     <Button
                         variant="contained"
                         color="secondary"
                         className={classes.editButton}
-                        onClick={() => props.history.push("/edit")}
+                        onClick={() => props.history.push(`/edit/${selectedArticle.key}`)}
                     >
                         Edit Post
                     </Button>

@@ -5,6 +5,10 @@ export const dbImage = firebase.db.ref("/images")
 
 class ArticleService {
 
+  getAll() {
+    return db
+  }
+
   create(article) {
     return db.push(article);
   }
