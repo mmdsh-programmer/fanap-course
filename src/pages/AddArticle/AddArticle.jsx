@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { AuthContext } from "helpers/AuthProvider"
 import Button from "components/Button/Button"
 import { useGetArticles } from "hook/GetArticles";
+import { useAddArticle } from "hook/AddArticle"
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -24,10 +25,13 @@ const useStyles = makeStyles((theme) => ({
 export default function AddArticle(props) {
   const classes = useStyles();
   const { register, handleSubmit, errors: fieldsErrors, setValue } = useForm();
+  const [article, setArticle] = React.useState(null);
+  const [image, setImage] = React.useState(null);
+  const [action, setAction] = React.useState(null);
+  const [selectedArticle, setSelectedArticle] = React.useState({ key: null, prop: [] });
+  const { loading } = useAddArticle(article, image, action, selectedArticle);
   const [rte, setRte] = React.useState();
   const { user } = React.useContext(AuthContext);
-  const [loading, setLoading] = React.useState(false);
-  const [selectedArticle, setSelectedArticle] = React.useState({ key: null, prop: [] });
   const { values } = useGetArticles();
   const onEditorChange = (data) => {
     setRte(data)
@@ -46,37 +50,9 @@ export default function AddArticle(props) {
   const onSubmit = async (data, e) => {
     e.preventDefault();
     const { title, picture } = data;
-    setLoading(true);
-    const key = db.ref().child(user.uid).push().key
-    const img = storage.ref("/images").child(props.match.params && props.match.params.key ? selectedArticle.prop.key : key);
-    await img.put(picture[0]);
-    const url = await img.getDownloadURL();
-
-    if (props.match.params && props.match.params.key) {
-      const finalData = {
-        title: title,
-        body: rte,
-        image: url,
-      }
-      ArticleService.update(selectedArticle.key, finalData)
-        .then(() => toast.success("Article was successfully edited"))
-        .catch(error => toast.error(error.message))
-        .finally(() => setLoading(false));
-    } else {
-      const finalData = {
-        title: title,
-        body: rte,
-        uid: user.uid,
-        datePublished: Date.now(),
-        key: key,
-        image: url,
-        name: user.displayName
-      }
-      ArticleService.create(finalData)
-        .then(() => toast.success("Article was successfully added"))
-        .catch(error => toast.error(error.message))
-        .finally(() => setLoading(false));
-    }
+    setAction(props.match.params && props.match.params.key ? "update" : "create");
+    setImage(picture[0]);
+    setArticle({ title: title, body: rte, uid: user.uid, name: user.displayName });
   };
 
   return (
