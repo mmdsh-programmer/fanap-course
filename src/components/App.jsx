@@ -1,5 +1,7 @@
 import React from "react";
 import RTL from "components/RTL"
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { faIR } from '@material-ui/core/locale';
@@ -10,7 +12,7 @@ import Signup from "pages/Signup"
 import NotFound from "pages/NotFound"
 import { PrivateRoute } from "components/PrivateRoute"
 import AuthContextProvider from "helpers/AuthContext";
-
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 const shabnam = {
   fontFamily: 'Shabnam',
@@ -33,6 +35,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <RTL>
+        <CssBaseline />
         <AuthContextProvider>
           <Router>
             <Switch>
@@ -43,6 +46,7 @@ export default function App() {
             </Switch>
           </Router>
         </AuthContextProvider>
+        <ToastContainer bodyClassName="rtl" />
       </RTL>
     </ThemeProvider>
   )

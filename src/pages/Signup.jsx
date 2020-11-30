@@ -1,16 +1,18 @@
 import React from 'react'
 import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Zoom from '@material-ui/core/Zoom';
 import { Link } from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useForm } from "react-hook-form"
+import Button from "components/Button"
+import { toast } from "react-toastify";
+import auth from "services/auth/auth"
+import { AuthContext } from "helpers/AuthContext"
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -33,19 +35,26 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Signup() {
+export default function Signup(props) {
     const classes = useStyles();
     const { register, handleSubmit, errors: fieldsErrors } = useForm();
+    const [loading, setLoading] = React.useState(false);
+    const { setUser } = React.useContext(AuthContext);
 
     const onSubmit = (data, e) => {
         e.preventDefault();
-        const { name, username, password } = data;
-        console.log(data);
+        setLoading(true)
+        auth.signup(data)
+            .then(res => {
+                setUser(res.data.user);
+                props.history.push("/home");
+            })
+            .catch((error) => toast.error(error.message))
+            .finally(() => setLoading(false));
     }
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
             <Zoom in={true}>
                 <Paper className={classes.paper} elevation={5}>
                     <Avatar className={classes.avatar}>
@@ -96,6 +105,7 @@ export default function Signup() {
                             variant="contained"
                             color="primary"
                             className={classes.submit}
+                            loading={loading}
                         >
                             ثبت نام
                         </Button>
