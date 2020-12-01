@@ -50,7 +50,7 @@ export default function Signin(props) {
                 setUser(res.data.user);
                 props.history.push("/home");
             })
-            .catch(() => toast.error("نام کاربری یا رمز عبور اشتباه است"), { className: { direction: "rtl" } })
+            .catch(() => toast.error("نام کاربری یا رمز عبور اشتباه است"))
             .finally(() => setLoading(false));
     }
 
