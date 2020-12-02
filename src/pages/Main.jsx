@@ -1,27 +1,39 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 import { AuthContext } from "helpers/AuthContext"
 import TopBar from "components/TopBar"
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import UserTable from "components/UserTable"
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+    },
+    paper: {
+        textAlign: 'center',
+    },
+}));
 
 export default function Main() {
+    const classes = useStyles();
     const { user, setUser } = React.useContext(AuthContext);
 
     return (
         <TopBar displayName={user.name} logOut={setUser} >
-            <Typography>
-                <Typography paragraph>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                    ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-                    facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-                    gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-                    donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                    adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-                    Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-                    imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-                    arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-                    donec massa sapien faucibus et molestie ac.
-        </Typography>
-            </Typography>
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                    <Paper className={classes.paper}>
+                        <UserTable />
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                    <Paper className={classes.paper}>xs</Paper>
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                    <Paper className={classes.paper}>xs</Paper>
+                </Grid>
+            </Grid>
         </TopBar>
     )
 }
