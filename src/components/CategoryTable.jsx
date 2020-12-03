@@ -8,13 +8,12 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { useForm, Controller } from "react-hook-form";
-import users from "services/crud/users"
+import category from "services/crud/categories"
 
 const useStyles = makeStyles((theme) => ({
     mlAuto: {
@@ -25,30 +24,26 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function UserTable(props) {
+export default function CategoryTable(props) {
     const classes = useStyles();
     const { control } = useForm();
     const [select, setSelected] = React.useState("");
-    const [userTable, setUserTable] = React.useState([]);
+    const [categoryTable, setCategoryTable] = React.useState([]);
 
     React.useEffect(() => {
-        users.read()
+        category.read()
             .then(res => {
-                setUserTable(res.data);
+                setCategoryTable(res.data);
             })
             .catch(error => { console.log(error.message) })
-    }, [userTable]);
-
-    const handleDelete = (id) => {
-        alert(id);
-    }
+    }, [])
 
     return (
         <React.Fragment>
             <Toolbar>
                 <Typography variant="h6" color="initial">
-                    کاربران
-                            </Typography>
+                    دسته بندی ها
+                </Typography>
                 <IconButton aria-label="add" className={classes.mlAuto}>
                     <AddIcon />
                 </IconButton>
@@ -57,36 +52,20 @@ export default function UserTable(props) {
                 <Controller
                     render={(props) => (
                         <RadioGroup
-                            name="users"
+                            name="categories"
                             value={select}
                             onChange={(e) => props.onChange(setSelected(e.target.value))}
                         >
                             <Table size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell align="left">شناسه</TableCell>
-                                        <TableCell align="left">نام</TableCell>
-                                        <TableCell align="left">نام کاربری</TableCell>
-                                        <TableCell align="left"></TableCell>
-                                    </TableRow>
-                                </TableHead>
                                 <TableBody>
-                                    {userTable.map((row) => (
+                                    {categoryTable.map((row) => (
                                         <TableRow key={row.id} hover selected={select === row.id}>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell scope="row">
                                                 <Radio value={row.id} />
                                             </TableCell>
-                                            <TableCell align="left">{row.id}</TableCell>
                                             <TableCell align="left">{row.name}</TableCell>
-                                            <TableCell align="left">{row.userName}</TableCell>
                                             <TableCell align="right">
-                                                <IconButton
-                                                    aria-label="delete"
-                                                    size="small"
-                                                    color="secondary"
-                                                    onClick={() => handleDelete(row.id)}
-                                                >
+                                                <IconButton aria-label="delete" size="small" color="secondary">
                                                     <DeleteForeverIcon fontSize="small" />
                                                 </IconButton>
                                             </TableCell>
